@@ -1,14 +1,22 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class AddPage extends StatefulWidget {
+
+  final Map video;
+
+  AddPage([this.video]);
+
   @override
-  _AddPageState createState() => _AddPageState();
+  _AddPageState createState() => _AddPageState(this.video);
 }
 
 class _AddPageState extends State<AddPage> {
+
+  Map video;
+
+  _AddPageState([this.video]);
 
   List _playlists;
   String _selectedListItem;
@@ -35,6 +43,14 @@ class _AddPageState extends State<AddPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    if(video != null){
+      _titleController.text = video['title'];
+      _descriptionController.text = video['description'];
+      _youtubeUrlController.text = "https://www.youtube.com/watch?v=" + video['youtube_key'];
+      _selectedListItem = video['playlist_id'].toString();
+    }
+
     _getPlaylists();
   }
 
@@ -42,7 +58,7 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Adicionar Video")
+        title: video != null ? Text("Alterar Video") : Text("Adicionar Video"),
       ),
       body: _formAdd(),
     );
@@ -50,49 +66,51 @@ class _AddPageState extends State<AddPage> {
 
 
   _formAdd(){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        TextFormField(
-          controller: _titleController,
-          key: Key('title'),
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(hintText: 'Título'),
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Please enter some text';
-            }
-            return null;
-          },
-        ),
-        TextFormField(
-          controller: _descriptionController,
-          key: Key('description'),
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(hintText: 'Descrição'),
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Please enter some text';
-            }
-            return null;
-          },
-        ),
-        TextFormField(
-          controller: _youtubeUrlController,
-          key: Key('youtube_key'),
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(hintText: 'URL Vídeo Youtube'),
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'Please enter some text';
-            }
-            return null;
-          },
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            DropdownButton<String>(
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            controller: _titleController,
+            key: Key('title'),
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(hintText: 'Título'),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: _descriptionController,
+            key: Key('description'),
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(hintText: 'Descrição'),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: _youtubeUrlController,
+            key: Key('youtube_key'),
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(hintText: 'URL Vídeo Youtube'),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              DropdownButton<String>(
                 isExpanded: true,
                 hint: Text("Selecione uma Playlist"),
                 value: _selectedListItem,
@@ -111,34 +129,50 @@ class _AddPageState extends State<AddPage> {
                   );
                 })?.toList() ?? [],
               ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: RaisedButton(
-            onPressed: () {
-              _submitForm();
-            },
-            child: Text('Salvar'),
+            ],
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: RaisedButton(
+              onPressed: () {
+                _submitForm();
+              },
+              child: Text('Salvar'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
 
   _submitForm() async{
+
     http.Response response;
-    response = await http.post(
-        "http://czoomdev.pe.hu/funny/api/video",
-        body: {
-          'title': _titleController.text.toString(),
-          'description': _descriptionController.text.toString(),
-          'youtubeUri': _youtubeUrlController.text.toString(),
-          'playlist_id': _selectedListItem,
-        },
-        headers: {"Accept": "application/json"}
-    );
+
+    if(video != null){
+      response = await http.put(
+          "http://czoomdev.pe.hu/funny/api/video/"+video['id'].toString(),
+          body: {
+            'title': _titleController.text.toString(),
+            'description': _descriptionController.text.toString(),
+            'youtubeUri': _youtubeUrlController.text.toString(),
+            'playlist_id': _selectedListItem,
+          },
+          headers: {"Accept": "application/json"}
+      );
+    }else{
+      response = await http.post(
+          "http://czoomdev.pe.hu/funny/api/video",
+          body: {
+            'title': _titleController.text.toString(),
+            'description': _descriptionController.text.toString(),
+            'youtubeUri': _youtubeUrlController.text.toString(),
+            'playlist_id': _selectedListItem,
+          },
+          headers: {"Accept": "application/json"}
+      );
+    }
 
     print(response.body);
     Navigator.pop(context);

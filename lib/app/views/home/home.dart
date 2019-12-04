@@ -6,7 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -66,39 +65,105 @@ class _HomeState extends State<Home> {
     return ListView.builder(
         itemCount: data == null ? 0 : data.length,
         itemBuilder: (context, index) {
+
           return _showImage(data[index]);
         }
     );
   }
 
 
-  _showImage(dynamic item) => Container(
-    decoration: BoxDecoration(
-      color: Colors.white
-    ),
-    margin: const EdgeInsets.all(1),
-    child: Column(
-      children: <Widget>[
-        GestureDetector(
-          onTap: (){
-            print(item);
-            FlutterYoutube.playYoutubeVideoByUrl(
-                apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
-                videoUrl: "https://www.youtube.com/watch?v=${item['youtube_key']}",
-                autoPlay: false, //default false
-                fullScreen: false //default false
-            );
-          },
-          onLongPress: (){
-            _showDialog(item);
-          },
-          child: CachedNetworkImage(
-            imageUrl: "https://img.youtube.com/vi/${item['youtube_key']}/hqdefault.jpg",
-          )
+  _showImage(dynamic item){
+    return Container(
+        decoration: BoxDecoration(
+            color: Colors.white
+        ),
+        margin: const EdgeInsets.all(1),
+        child: Column(
+            children: <Widget>[
+              GestureDetector(
+                  onTap: (){
+                    print(item);
+                    /*FlutterYoutube.playYoutubeVideoByUrl(
+                        apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
+                        videoUrl: "https://www.youtube.com/watch?v=${item['youtube_key']}",
+                        autoPlay: false, //default false
+                        fullScreen: false //default false
+                    );*/
+                    FlutterYoutube.onVideoEnded.listen((onData) {
+                      //perform your action when video playing is done
+                    });
+                    FlutterYoutube.playYoutubeVideoById(
+                        apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
+                        videoId: item['youtube_key'],
+                        autoPlay: true);
+                  },
+                  onLongPress: (){
+                    return showDialog(
+                        context: context,
+                        builder: (BuildContext context){
+                          return AlertDialog(
+                            content: Text(
+                                "O que deseja fazer com '${item['title']}'?"),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text(
+                                  "Nada",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              FlatButton(
+                                child: Text(
+                                  "Alterar",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.push(context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddPage(item)
+                                      )
+                                  ).then((value){
+                                    setState(() {
+                                      getVideos();
+                                    });
+                                  });
+                                },
+                              ),
+                              FlatButton(
+                                child: Text(
+                                  "Remover",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  _showDialog(item);
+                                },
+                              ),
+                            ],
+                          );
+                        }
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    child: Column(
+                      children: <Widget>[
+                        CachedNetworkImage(
+                          imageUrl: "http://img.youtube.com/vi/${item['youtube_key']}/hqdefault.jpg",
+                        ),
+                        Text(item['title'], style: TextStyle(fontSize: 20.0),)
+                      ],
+                    ),
+                  )
+              )
+            ]
         )
-      ]
-    )
-  );
+    );
+  }
+
 
 
   void _showDialog(dynamic item) {
@@ -108,7 +173,7 @@ class _HomeState extends State<Home> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: Text("Deletar # ${item['title']}"),
+          title: Text("Remover # ${item['title']}"),
           content: Text("Deseja mesmo remover este vídeo?"),
           actions: <Widget>[
             FlatButton(
