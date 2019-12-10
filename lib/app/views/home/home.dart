@@ -38,6 +38,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black45,
       appBar: AppBar(
         title: Text('Funny Videos App'),
         actions: <Widget>[
@@ -75,89 +76,111 @@ class _HomeState extends State<Home> {
   _showImage(dynamic item){
     return Container(
         decoration: BoxDecoration(
-            color: Colors.white
+            color: Colors.black
         ),
         margin: const EdgeInsets.all(1),
         child: Column(
             children: <Widget>[
-              GestureDetector(
-                  onTap: (){
-                    print(item);
-                    /*FlutterYoutube.playYoutubeVideoByUrl(
-                        apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
-                        videoUrl: "https://www.youtube.com/watch?v=${item['youtube_key']}",
-                        autoPlay: false, //default false
-                        fullScreen: false //default false
-                    );*/
-                    FlutterYoutube.onVideoEnded.listen((onData) {
-                      //perform your action when video playing is done
-                    });
-                    FlutterYoutube.playYoutubeVideoById(
-                        apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
-                        videoId: item['youtube_key'],
-                        autoPlay: true);
-                  },
-                  onLongPress: (){
-                    return showDialog(
-                        context: context,
-                        builder: (BuildContext context){
-                          return AlertDialog(
-                            content: Text(
-                                "O que deseja fazer com '${item['title']}'?"),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text(
-                                  "Nada",
-                                  style: TextStyle(color: Colors.black),
+              Container(
+                margin: EdgeInsets.all(20),
+                child: GestureDetector(
+                    onTap: (){
+                      print(item);
+                      /*FlutterYoutube.playYoutubeVideoByUrl(
+                          apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
+                          videoUrl: "https://www.youtube.com/watch?v=${item['youtube_key']}",
+                          autoPlay: false, //default false
+                          fullScreen: false //default false
+                      );*/
+                      FlutterYoutube.onVideoEnded.listen((onData) {
+                        //perform your action when video playing is done
+                      });
+                      FlutterYoutube.playYoutubeVideoById(
+                          apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
+                          videoId: item['youtube_key'],
+                          autoPlay: true);
+                    },
+                    onLongPress: (){
+                      return showDialog(
+                          context: context,
+                          builder: (BuildContext context){
+                            return AlertDialog(
+                              content: Text(
+                                  "O que deseja fazer com '${item['title']}'?"),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text(
+                                    "Nada",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
                                 ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              FlatButton(
-                                child: Text(
-                                  "Alterar",
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  Navigator.push(context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AddPage(item)
-                                      )
-                                  ).then((value){
-                                    setState(() {
-                                      getVideos();
+                                FlatButton(
+                                  child: Text(
+                                    "Alterar",
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.push(context,
+                                        MaterialPageRoute(
+                                            builder: (context) => AddPage(item)
+                                        )
+                                    ).then((value){
+                                      setState(() {
+                                        getVideos();
+                                      });
                                     });
-                                  });
-                                },
-                              ),
-                              FlatButton(
-                                child: Text(
-                                  "Remover",
-                                  style: TextStyle(color: Colors.red),
+                                  },
                                 ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  _showDialog(item);
-                                },
-                              ),
+                                FlatButton(
+                                  child: Text(
+                                    "Remover",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    _showDialog(item);
+                                  },
+                                ),
+                              ],
+                            );
+                          }
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(bottom: 15),
+                            child: Text(item['title'], style: TextStyle(fontSize: 20.0, color: Colors.white),)
+                            ),
+                          CachedNetworkImage(
+                            imageUrl: "http://img.youtube.com/vi/${item['youtube_key']}/hqdefault.jpg",
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.favorite , color: Colors.red,),
+                              Icon(Icons.comment, color: Colors.white,),
+                              Icon(Icons.panorama_horizontal, color: Colors.white,),
+                              Icon(Icons.file_download, color: Colors.white,),
+                              
                             ],
-                          );
-                        }
-                    );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                    child: Column(
-                      children: <Widget>[
-                        CachedNetworkImage(
-                          imageUrl: "http://img.youtube.com/vi/${item['youtube_key']}/hqdefault.jpg",
-                        ),
-                        Text(item['title'], style: TextStyle(fontSize: 20.0),)
-                      ],
-                    ),
-                  )
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(top: 20),
+                                width: double.infinity,
+                                height: 1,
+                                color: Colors.white,
+                              )
+                        ],
+                      ),
+                    )
+                ),
               )
             ]
         )

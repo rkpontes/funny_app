@@ -71,6 +71,7 @@ class _AddPageState extends State<AddPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          SizedBox(height: 10),
           TextFormField(
             controller: _titleController,
             key: Key('title'),
@@ -83,6 +84,7 @@ class _AddPageState extends State<AddPage> {
               return null;
             },
           ),
+          SizedBox(height: 10),
           TextFormField(
             controller: _descriptionController,
             key: Key('description'),
@@ -95,6 +97,7 @@ class _AddPageState extends State<AddPage> {
               return null;
             },
           ),
+           SizedBox(height: 10),
           TextFormField(
             controller: _youtubeUrlController,
             key: Key('youtube_key'),
@@ -107,6 +110,7 @@ class _AddPageState extends State<AddPage> {
               return null;
             },
           ),
+           SizedBox(height: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -131,14 +135,30 @@ class _AddPageState extends State<AddPage> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: RaisedButton(
-              onPressed: () {
-                _submitForm();
-              },
-              child: Text('Salvar'),
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height/2,
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: RaisedButton(
+                        color: Colors.red,
+                        padding: EdgeInsets.fromLTRB(150, 0, 150, 0),
+                        onPressed: () {
+                          _submitForm();
+                        },
+                        child: Container(
+                          child: Text('Salvar',style: TextStyle(color: Colors.white),)),
+                      ),
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+              ),
+            ],
           ),
         ],
       ),
