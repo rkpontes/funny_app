@@ -57,6 +57,8 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
+     
       appBar: AppBar(
         title: video != null ? Text("Alterar Video") : Text("Adicionar Video"),
       ),
@@ -139,14 +141,14 @@ class _AddPageState extends State<AddPage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
-                height: MediaQuery.of(context).size.height/2,
+                height: MediaQuery.of(context).size.height/3,
                 child: Row(
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: RaisedButton(
                         color: Colors.red,
-                        padding: EdgeInsets.fromLTRB(150, 0, 150, 0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width/3, 0, MediaQuery.of(context).size.width/3, 0),
                         onPressed: () {
                           _submitForm();
                         },

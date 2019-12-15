@@ -86,15 +86,6 @@ class _HomeState extends State<Home> {
                 child: GestureDetector(
                     onTap: (){
                       print(item);
-                      /*FlutterYoutube.playYoutubeVideoByUrl(
-                          apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
-                          videoUrl: "https://www.youtube.com/watch?v=${item['youtube_key']}",
-                          autoPlay: false, //default false
-                          fullScreen: false //default false
-                      );*/
-                      FlutterYoutube.onVideoEnded.listen((onData) {
-                        //perform your action when video playing is done
-                      });
                       FlutterYoutube.playYoutubeVideoById(
                           apiKey: "AIzaSyC09msL4NHvgquEtXSA4BJ2x0P2aS-UGEM",
                           videoId: item['youtube_key'],
